@@ -1,0 +1,10 @@
+# application.yml en booking-service
+microservice:
+  payment-service:
+    endpoints:
+      endpoint:
+        uri: http://payment-service/payment/doPayment
+  auth-service:
+    endpoints:
+      endpoint:
+        uri: http://auth-service/auth/validateToken
