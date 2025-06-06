@@ -19,7 +19,7 @@ public class BookingController {
     private BookingService bookingService;
 
     @Autowired
-    private RestTemplate restTemplate;  // <-- Inyectamos el RestTemplat
+    private RestTemplate restTemplate;  // <-- Inyectamos el RestTemplate
 
     @PostMapping("/bookOrder")
     public BookingResponse bookOrder(
