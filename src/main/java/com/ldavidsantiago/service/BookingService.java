@@ -20,22 +20,36 @@ import org.springframework.web.client.RestTemplate;
 public class BookingService {
     @Autowired
     private BookingRespository bookingRespository;
-@Autowired
-@Lazy
-private RestTemplate restTemplate;
-@Value("${microservice.payment-service.endpoints.endpoint.uri}")
-private String baseUrl;
+    @Autowired
+    @Lazy
+    private RestTemplate restTemplate;
+    @Value("${microservice.payment-service.endpoints.endpoint.uri}")
+    private String baseUrl;
 
 
     public BookingResponse bookOder(BookingRequest bookingRequest , String token){
+        System.out.println("=== Starting booking process ===");
         Payment payment = new Payment();
         BookOrder bookOrder = bookingRequest.getBookOrder();
         payment.setAmount(bookOrder.getPrice());
         payment.setOrderId(bookOrder.getId());
-        Integer userId = ((Number) JwtUtil.extractClaimsWithoutValidation(token).get("id")).intValue();
-        System.out.println("User claims: " + userId);
+
+        // Extraer userId del token con manejo de null
+        Integer userId = 1; // Default userId
+        try {
+            Object idClaim = JwtUtil.extractClaimsWithoutValidation(token).get("id");
+            if (idClaim != null) {
+                userId = ((Number) idClaim).intValue();
+            }
+            System.out.println("User claims: " + userId);
+        } catch (Exception e) {
+            System.out.println("Warning: Could not extract userId from token, using default: " + userId);
+        }
+
         payment.setUserId(userId);
+        System.out.println("Calling payment service at URL: " + baseUrl);
         Payment paymentResponse = restTemplate.postForObject(baseUrl, payment, Payment.class);
+        System.out.println("Payment response: " + paymentResponse);
         String response = paymentResponse.getPaymentStatus().equals("Success")?"Payment processed Successful":"Payment Failure";
         bookingRespository.save(bookOrder);
         return new BookingResponse(bookOrder,userId,paymentResponse.getAmount(),paymentResponse.getTransactionId(),response);
