@@ -13,6 +13,7 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -54,7 +55,9 @@ public class BookingService {
         String response = paymentResponse.getPaymentStatus().equals("Success")?"Payment processed Successful":"Payment Failure";
         bookingRespository.save(bookOrder);
         return new BookingResponse(totalprice,nombre,bookOrder,userId,paymentResponse.getAmount(),paymentResponse.getTransactionId(),response);
-
-
+      
+    }
+    public Optional<BookOrder> getBookOrderById(Integer id) {
+        return bookingRespository.findById(id);
     }
 }

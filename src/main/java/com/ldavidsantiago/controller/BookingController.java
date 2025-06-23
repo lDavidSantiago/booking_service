@@ -12,6 +12,8 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.ResponseEntity;
+import com.ldavidsantiago.entity.BookOrder;
 
 @RestController
 @RequestMapping("book")
@@ -65,5 +67,12 @@ public class BookingController {
     }catch (Exception e) {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token vencido o invalido : " + e.getMessage());
     }
+    
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<BookOrder> getBookOrderById(@PathVariable Integer id) {
+    return bookingService.getBookOrderById(id)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
+}
 }
