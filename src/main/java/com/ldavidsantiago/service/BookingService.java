@@ -33,7 +33,7 @@ public class BookingService {
         BookOrder bookOrder = bookingRequest.getBookOrder();
         payment.setAmount(bookOrder.getPrice());
         payment.setOrderId(bookOrder.getId());
-
+        String nombre = bookOrder.getName();
         // Extraer userId del token con manejo de null
         Integer userId = 1; // Default userId
         try {
@@ -45,14 +45,15 @@ public class BookingService {
         } catch (Exception e) {
             System.out.println("Warning: Could not extract userId from token, using default: " + userId);
         }
-
+        bookOrder.setName(nombre);
+        double totalprice = bookOrder.getPrice();
         payment.setUserId(userId);
         System.out.println("Calling payment service at URL: " + baseUrl);
         Payment paymentResponse = restTemplate.postForObject(baseUrl, payment, Payment.class);
         System.out.println("Payment response: " + paymentResponse);
         String response = paymentResponse.getPaymentStatus().equals("Success")?"Payment processed Successful":"Payment Failure";
         bookingRespository.save(bookOrder);
-        return new BookingResponse(bookOrder,userId,paymentResponse.getAmount(),paymentResponse.getTransactionId(),response);
+        return new BookingResponse(totalprice,nombre,bookOrder,userId,paymentResponse.getAmount(),paymentResponse.getTransactionId(),response);
 
 
     }

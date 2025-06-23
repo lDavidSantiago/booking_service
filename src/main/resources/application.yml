@@ -8,3 +8,8 @@ microservice:
     endpoints:
       endpoint:
         uri: http://auth-service/auth/validateToken
+  product-microservice:
+    endpoints:
+      endpoint:
+        uri: http://product-microservice/product
+

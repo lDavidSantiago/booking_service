@@ -1,5 +1,6 @@
 package com.ldavidsantiago.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -15,7 +16,10 @@ import lombok.NoArgsConstructor;
 public class BookOrder {
     @Id
     private Integer id;
+    @JsonIgnore
     private String name;
+
     private Integer quantity;
+    @JsonIgnore
     private double price;
 }
